@@ -1,0 +1,67 @@
+from google.colab import files
+from google.colab import drive
+drive.mount('/content/drive')
+import pandas as pd
+import numpy as np
+dic={}
+df = pd.read_excel('/content/drive/MyDrive/Graph/Creacion_de_la_carrera_de_mat_ap (1).xlsx')
+for index, row in df.iterrows():
+        id = str(row['Actividad'])
+        dependencias = str(row['Precedentes']).split(',') if pd.notnull(row['Precedentes']) else []
+        dic[id] = dependencias
+dic=dic
+sub = {}
+for a, ps in dic.items():
+  sub[a]=[]
+  for p in ps:
+    sub [p].append(a)
+sub
+nodes = [0,1]
+arrows = []
+done= [[],[]]
+ind = 2
+arcs = {}
+for k,v in dic.items():
+  print(k)
+  if v == []:
+    print(k)
+    nodes.append(ind)
+    arrows.append((0,ind))
+    done.append([k])
+    arcs[k]=(0,ind)
+    ind += 1
+  elif not v in done:
+    separated =[[elem] for elem in v]
+    for elem in separated:
+      arrows.append((done.index(elem),ind))
+    done.append(v)
+    nodes.append(ind)
+    ind += 1
+    if sub[k] == []:
+      arrows.append((done.index(v),1))
+      arcs[k] = (done.index(v),1)
+    else:
+      nodes.append(ind)
+      arrows.append((done.index(v),ind))
+      done.append([k])
+      arcs[k]  = (done.index(v),ind)
+      ind += 1
+  else:
+    if sub[k] == []:
+      arrows.append((done.index(v),1))
+      arcs[k] = (done.index(v),1)
+    else:
+      nodes.append(ind)
+      arrows.append((done.index(v),ind))
+      done.append([k])
+      arcs[k] = (done.index(v),ind)
+      ind +=1
+sub
+print(sub)
+print(nodes)
+print(arrows)
+print(done)
+print(ind)
+print(arcs)
+print(dic)
+#lo demas no supe como hacerlo:c
